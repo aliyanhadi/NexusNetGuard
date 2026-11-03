@@ -3,6 +3,7 @@ name: Build APKs
 on:
   push:
     branches: [main, master]
+    tags: ["v*"]
   pull_request:
   workflow_dispatch:
 
@@ -91,5 +92,7 @@ jobs:
         run: |
           cp app/build/outputs/apk/standard/release/*.apk "NexusNetGuard-${GITHUB_REF_NAME}.apk"
           cp app/build/outputs/apk/pro/release/*.apk "NexusNetGuard-Pro-${GITHUB_REF_NAME}.apk"
+          # If the release already exists (e.g. you created it on the website), just attach the APKs.
           gh release create "$GITHUB_REF_NAME" NexusNetGuard-*.apk \
-            --title "Nexus NetGuard $GITHUB_REF_NAME" --generate-notes
+            --title "Nexus NetGuard $GITHUB_REF_NAME" --generate-notes \
+            || gh release upload "$GITHUB_REF_NAME" NexusNetGuard-*.apk --clobber
