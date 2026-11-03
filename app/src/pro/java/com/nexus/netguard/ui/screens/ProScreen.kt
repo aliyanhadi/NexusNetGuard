@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.ui.Alignment
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -12,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -92,7 +94,7 @@ fun ProScreen(blocked: Set<String>, games: List<AppItem>, vm: ProViewModel = vie
             NexusCard {
                 Text("PRO BOOST", fontSize = 12.sp, color = NexusColors.TextDim, fontWeight = FontWeight.Bold)
                 Text(
-                    "• System-wide Private DNS (works together with the Firewall)\n" +
+                    "• System-wide Private DNS, tested first and rolled back if internet fails (use it OR DNS Boost, not both)\n" +
                         "• Game Mode → performance for your PUBG build (Android 12+)\n" +
                         "• Background restrictions for the ${blocked.size} apps chosen in the Firewall tab",
                     fontSize = 12.sp, color = NexusColors.TextDim, modifier = Modifier.padding(vertical = 6.dp),
@@ -101,6 +103,10 @@ fun ProScreen(blocked: Set<String>, games: List<AppItem>, vm: ProViewModel = vie
                     dns.forEachIndexed { i, d ->
                         FilterChip(selected = i == s.dnsChoice, onClick = { vm.selectDns(i) }, label = { Text(d.name) })
                     }
+                }
+                Row(Modifier.fillMaxWidth().padding(top = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Text("Set Private DNS", fontSize = 13.sp, color = NexusColors.Text, modifier = Modifier.weight(1f))
+                    Switch(checked = s.useDns, onCheckedChange = vm::setUseDns)
                 }
                 Row(Modifier.fillMaxWidth().padding(top = 10.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Button(
@@ -118,6 +124,11 @@ fun ProScreen(blocked: Set<String>, games: List<AppItem>, vm: ProViewModel = vie
                     "Restore puts back your original Private DNS, Game Mode and app restrictions.",
                     fontSize = 11.sp, color = NexusColors.TextDim, modifier = Modifier.padding(top = 6.dp),
                 )
+                OutlinedButton(
+                    onClick = vm::resetDns,
+                    enabled = ready && !s.busy,
+                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                ) { Text("Emergency: reset DNS to Automatic") }
             }
         }
 

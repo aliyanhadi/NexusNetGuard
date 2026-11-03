@@ -25,7 +25,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import com.nexus.netguard.network.DnsResolverManager
+import com.nexus.netguard.network.NetCheck
+import kotlinx.coroutines.launch
 import com.nexus.netguard.service.NexusDnsTunnelService
 import com.nexus.netguard.service.NexusVpnTunnelService
 import com.nexus.netguard.ui.screens.DashboardScreen
@@ -152,6 +155,21 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun applyDns(server: DnsResolverManager.Server) {
+        lifecycleScope.launch {
+            if (!NetCheck.dotReachable(server.privateDnsHost)) {
+                Toast.makeText(
+                    this@MainActivity,
+                    "${server.privateDnsHost} isn't reachable on port 853 on this network. Setting it as Private DNS " +
+                        "would cut your internet. Use DNS Boost instead, or try another server.",
+                    Toast.LENGTH_LONG,
+                ).show()
+                return@launch
+            }
+            applyDnsNow(server)
+        }
+    }
+
+    private fun applyDnsNow(server: DnsResolverManager.Server) {
         val cm = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
         cm.setPrimaryClip(ClipData.newPlainText("Private DNS", server.privateDnsHost))
         Toast.makeText(
