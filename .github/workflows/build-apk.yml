@@ -26,7 +26,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: NexusNetGuard
+          name: NexusNetGuard-standard
           path: app/build/outputs/apk/standard/debug/*.apk
           if-no-files-found: error
 
@@ -72,12 +72,12 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: NexusNetGuard-standard-release
+          name: NexusNetGuard
           path: app/build/outputs/apk/standard/release/*.apk
           if-no-files-found: error
 
       - uses: actions/upload-artifact@v4
         with:
-          name: NexusNetGuard-pro-release
+          name: NexusNetGuard-pro
           path: app/build/outputs/apk/pro/release/*.apk
           if-no-files-found: error
