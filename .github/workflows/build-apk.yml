@@ -26,13 +26,13 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: NexusNetGuard-standard-debug
+          name: NexusNetGuard-standard
           path: app/build/outputs/apk/standard/debug/*.apk
           if-no-files-found: error
 
       - uses: actions/upload-artifact@v4
         with:
-          name: NexusNetGuard-pro-debug
+          name: NexusNetGuard-pro
           path: app/build/outputs/apk/pro/debug/*.apk
           if-no-files-found: error
 
