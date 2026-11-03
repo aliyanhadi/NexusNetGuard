@@ -26,7 +26,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: NexusNetGuard-standard
+          name: NexusNetGuard
           path: app/build/outputs/apk/standard/debug/*.apk
           if-no-files-found: error
 
