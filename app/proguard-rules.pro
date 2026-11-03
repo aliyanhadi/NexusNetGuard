@@ -1,0 +1,3 @@
+-keep class com.nexus.netguard.service.** { *; }
+-keep class com.nexus.netguard.pro.** { *; }
+-keep class rikka.shizuku.** { *; }
