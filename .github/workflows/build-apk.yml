@@ -26,13 +26,13 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: NexusNetGuard
+          name: NexusNetGuard-standard-debug
           path: app/build/outputs/apk/standard/debug/*.apk
           if-no-files-found: error
 
       - uses: actions/upload-artifact@v4
         with:
-          name: NexusNetGuard-pro
+          name: NexusNetGuard-pro-debug
           path: app/build/outputs/apk/pro/debug/*.apk
           if-no-files-found: error
 
@@ -40,6 +40,8 @@ jobs:
     # Signed release APKs. Runs manually (Run workflow) or on version tags like v1.0.0.
     if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-24.04
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
@@ -72,12 +74,22 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: NexusNetGuard
+          name: NexusNetGuard-standard-release
           path: app/build/outputs/apk/standard/release/*.apk
           if-no-files-found: error
 
       - uses: actions/upload-artifact@v4
         with:
-          name: NexusNetGuard-pro
+          name: NexusNetGuard-pro-release
           path: app/build/outputs/apk/pro/release/*.apk
           if-no-files-found: error
+
+      - name: Publish GitHub Release (tag pushes only)
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp app/build/outputs/apk/standard/release/*.apk "NexusNetGuard-${GITHUB_REF_NAME}.apk"
+          cp app/build/outputs/apk/pro/release/*.apk "NexusNetGuard-Pro-${GITHUB_REF_NAME}.apk"
+          gh release create "$GITHUB_REF_NAME" NexusNetGuard-*.apk \
+            --title "Nexus NetGuard $GITHUB_REF_NAME" --generate-notes
