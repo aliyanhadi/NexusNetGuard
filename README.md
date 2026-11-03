@@ -44,3 +44,10 @@ Opt-in switch on the Hub. Set `TELEMETRY_URL` (and `API_TOKEN` if the server use
 Pro adds: system-wide Private DNS set in one tap (works alongside the Firewall), Game Mode performance for the game,
 and background restrictions for the apps selected in the Firewall tab, with a Restore button. Both can be installed side by side.
 Neither app contains anything that touches the game's files, memory or process.
+
+## Publishing a GitHub Release
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+The workflow builds both signed release APKs and attaches them to a new Release. Bump `versionName` in `app/build.gradle.kts` first.
